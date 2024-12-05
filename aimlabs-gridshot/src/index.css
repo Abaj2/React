@@ -1,0 +1,70 @@
+.start-button {
+  width: 50px;
+  height: 50px;
+  background-color: orange;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 400px;
+  margin-top: 20px;
+}
+
+body {
+  background-color: black;
+  cursor: crosshair;
+  display: flex;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+
+}
+
+.score-container, .time-container {
+  background-color: grey;
+  height: 100px;
+  width: 403px;
+  box-sizing: border-box;
+}
+.score-container {
+  border-left: 5px solid cyan;
+}
+.time-container {
+  border-right: 5px solid cyan;
+}
+.header p {
+  color: white;
+  font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  font-size: 28px;
+  display: flex;
+  justify-content: center;
+
+}
+.startgame-container p {
+  padding-top: 30px;
+  color: white;
+  font-size: 40px;
+}
+.startgame-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 800px;
+  height: 750px;
+  border: 3px solid cyan;
+  position: relative; /* Add this to position the balls relative to this container */
+}
+
+.ball {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  background-color: red; /* Ball color */
+  border-radius: 50%; /* Make the ball circular */
+  cursor: pointer;
+}
