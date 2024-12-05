@@ -1,4 +1,4 @@
-import "./App.css";
+import "./Components/style.css";
 import TypingTest from "./Components/TypingTest";
 
 function App() {
