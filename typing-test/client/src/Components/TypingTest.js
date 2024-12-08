@@ -1,5 +1,6 @@
 import React from "react";
 import { useState, useEffect, useRef } from "react";
+import './TypingTest.css'
 
 function TypingTest() {
   const commonWords = [
@@ -137,9 +138,10 @@ function TypingTest() {
             onChange={handleChange}
           />
           {fullParagraph.split("").map((char, index) => (
-            <span 
+            <span
               key={index} 
-              className={`char ${index === charIndex ? "active" : ""} ${correctWrong[index]}`} 
+              id='first-span'
+              className={`char ${index === charIndex ? "active" : ""} ${correctWrong[index]}`}
               ref={(e) => (charRefs.current[index] = e)}
             >
               {char}
