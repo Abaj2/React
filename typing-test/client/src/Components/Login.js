@@ -5,8 +5,9 @@ function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [inputType, setInputType] = useState("password");
+  const [errorMessage, setErrorMessage] = useState("");
   const passwordRef = useRef(null);
-  const emailRef = useRef(null);
+  const usernameRef = useRef(null);
 
   const showPassword = () => {
     if (inputType === "password") {
@@ -47,10 +48,16 @@ function Login() {
         });
         const data = await response.json();
         console.log(data.username);
-        if (response.ok) {
-          console.log("User added:", data);
+        console.log(data.password);
+
+        if (data.error) {
+          setErrorMessage(data.error); // Set error message if any error is received
         } else {
-          console.error("Error adding user:", data);
+          console.log("Signed in as", data.username);
+        }
+
+        if (!response.ok) {
+          console.error("Error signing in:", data);
         }
       } catch (error) {
         console.error("Error:", error);
@@ -65,13 +72,13 @@ function Login() {
           <strong>Sign in</strong>
         </span>
         <input
-          ref={emailRef}
+          ref={usernameRef}
           type="email"
-          placeholder="Email"
+          placeholder="Username"
           className="login-email-input login-inputs"
           value={username}
           onChange={handleUsernameChange}
-        ></input>
+        />
         <div className="login-password-container">
           <input
             ref={passwordRef}
@@ -80,11 +87,18 @@ function Login() {
             className="login-password-input login-inputs"
             value={password}
             onChange={handlePasswordChange}
-          ></input>
+          />
           <button className="login-button" onClick={showPassword}>
             {inputType === "password" ? "Show" : "Hide"}
           </button>
         </div>
+        <p className="error-message">
+          {errorMessage === "Non-existent username"
+            ? "That username doesn't exist"
+            : errorMessage === "Incorrect password"
+            ? "The password you entered is incorrect"
+            : ""}
+        </p>
         <button
           className="login-sign-in-button login-button"
           onClick={handleSubmit}

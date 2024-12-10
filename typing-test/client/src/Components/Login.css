@@ -21,6 +21,7 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 400px;
+  text-align: center;
 }
 
 .login .login-sign-in-text {
@@ -88,4 +89,7 @@
   cursor: pointer;
   transition: background-color 0.3s;
   background-color: #3a7df3;
+}
+.error-message {
+  color: red
 }
