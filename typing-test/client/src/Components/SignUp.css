@@ -56,9 +56,8 @@
 
 .login .login-password-container button {
   position: absolute;
-  width: 15%;
   top: 13px;
-  left: 13vw;
+  left: 5vw;
   transform: translateY(-50%);
   background-color: transparent;
   border: none;

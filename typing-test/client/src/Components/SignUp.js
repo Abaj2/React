@@ -1,10 +1,11 @@
-import "./Login.css";
+import "./SignUp.css";
 import React, { useState, useEffect, useRef } from "react";
 
 function Login() {
   const [inputType, setInputType] = useState("password");
   const passwordRef = useRef(null);
   const emailRef = useRef(null);
+  const confirmPasswordRef = useRef(null);
   const showPassword = () => {
     if (inputType === "password") {
       setInputType("text");
@@ -13,12 +14,16 @@ function Login() {
     }
   };
   const signIn = () => {
-    if (passwordRef.current.value === "" && emailRef.current.value === "") {
-      alert("Enter an email and password");
-    } else if (emailRef.current.value === "") {
-      alert("Enter an email");
-    } else if (passwordRef.current.value === "") {
-      alert("Enter a password");
+    if (
+      confirmPasswordRef.current.value ||
+      emailRef.current.value ||
+      passwordRef.current.value === ""
+    ) {
+      alert("Please fill in all sections");
+    }
+    if (passwordRef.current.value !== confirmPasswordRef.current.value) {
+      alert("Passwords do not match");
+      return;
     }
   };
   return (
@@ -40,10 +45,17 @@ function Login() {
             placeholder="Password"
             className="login-password-input login-inputs"
           ></input>
+          <input
+            ref={confirmPasswordRef}
+            type={inputType}
+            placeholder="Password"
+            className="login-password-input login-inputs"
+          ></input>
           <button className="login-button" onClick={showPassword}>
             {inputType === "password" ? "Show" : "Hide"}
           </button>
         </div>
+
         <button className="login-sign-in-button login-button" onClick={signIn}>
           Sign in
         </button>

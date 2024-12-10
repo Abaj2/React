@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Login from "./Components/Login";
 import TypingTest from "./Components/TypingTest";
+import SignUp from "./Components/SignUp";
 import React from "react";
 
 function App() {
@@ -20,6 +21,14 @@ function App() {
           element={
             <div className="login">
               <Login />
+            </div>
+          }
+        />
+        <Route
+          path="/create-accoutn"
+          element={
+            <div className="login">
+              <SignUp />
             </div>
           }
         />
