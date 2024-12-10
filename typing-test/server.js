@@ -25,13 +25,15 @@ app.post("/add-user", async (req, res) => {
   console.log("Received data on server:", req.body); // Log the data received
 
   if (!username || !password) {
-    return res.status(400).json({ error: "Username and password are required" });
+    return res
+      .status(400)
+      .json({ error: "Username and password are required" });
   }
 
   try {
     const result = await pool.query(
-      "INSERT INTO users(username, password) VALUES($1, $2) RETURNING *",
-      [username, password]
+      "SELECT username FROM users WHERE username = $1",
+      [username]
     );
     res.status(200).json(result.rows[0]);
   } catch (error) {

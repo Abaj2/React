@@ -46,6 +46,7 @@ function Login() {
           body: JSON.stringify(userData),
         });
         const data = await response.json();
+        console.log(data.username);
         if (response.ok) {
           console.log("User added:", data);
         } else {
