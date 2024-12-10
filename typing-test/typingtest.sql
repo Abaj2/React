@@ -69,6 +69,9 @@ ALTER TABLE ONLY public.users ALTER COLUMN user_id SET DEFAULT nextval('public.u
 --
 
 COPY public.users (user_id, username, password, fastest) FROM stdin;
+12	aarav	test	\N
+13	aarav	test2	\N
+14	a	tsetstst	\N
 \.
 
 
@@ -76,7 +79,7 @@ COPY public.users (user_id, username, password, fastest) FROM stdin;
 -- Name: users_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.users_user_id_seq', 1, false);
+SELECT pg_catalog.setval('public.users_user_id_seq', 14, true);
 
 
 --

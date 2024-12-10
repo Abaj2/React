@@ -9,21 +9,42 @@ const port = process.env.PORT || 3001;
 const password = process.env.PASSWORD;
 
 app.use(express.json());
-app.use(corse());
+app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 
-const pool = new pool({
+const pool = new Pool({
   user: "postgres",
-  host: `localhost`,
+  host: "localhost",
   database: "typingtest",
   password: password,
-  port: port,
+  port: 5432,
+});
+
+app.post("/add-user", async (req, res) => {
+  const { username, password } = req.body;
+  console.log("Received data on server:", req.body); // Log the data received
+
+  if (!username || !password) {
+    return res.status(400).json({ error: "Username and password are required" });
+  }
+
+  try {
+    const result = await pool.query(
+      "INSERT INTO users(username, password) VALUES($1, $2) RETURNING *",
+      [username, password]
+    );
+    res.status(200).json(result.rows[0]);
+  } catch (error) {
+    console.error("Error inserting user into database:", error);
+    res.status(500).json({ error: "Error inserting user into database" });
+  }
 });
 
 pool
   .connect()
   .then(() => console.log("Connected to PostgreSQL"))
   .catch((err) => console.log("Connection error", err.stack));
+
 app.use(express.static(path.join(__dirname, "client", "build")));
 
 app.get("*", (req, res) => {

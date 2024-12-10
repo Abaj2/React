@@ -25,7 +25,7 @@ function App() {
           }
         />
         <Route
-          path="/create-accoutn"
+          path="/create-account"
           element={
             <div className="login">
               <SignUp />
