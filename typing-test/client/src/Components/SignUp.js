@@ -1,66 +1,147 @@
-import "./SignUp.css";
-import React, { useState, useEffect, useRef } from "react";
+import "./Login.css";
+import React, { useState, useRef } from "react";
 
 function Login() {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [inputType, setInputType] = useState("password");
+  const [errorMessage, setErrorMessage] = useState(""); // To hold error messages
   const passwordRef = useRef(null);
-  const emailRef = useRef(null);
+  const usernameRef = useRef(null);
   const confirmPasswordRef = useRef(null);
+
   const showPassword = () => {
     if (inputType === "password") {
       setInputType("text");
-    } else if (inputType === "text") {
+    } else {
       setInputType("password");
     }
   };
-  const signIn = () => {
-    if (
-      confirmPasswordRef.current.value ||
-      emailRef.current.value ||
-      passwordRef.current.value === ""
-    ) {
-      alert("Please fill in all sections");
+
+  const handleUsernameChange = (event) => {
+    setUsername(event.target.value);
+  };
+
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
+  };
+
+  const handleConfirmPasswordChange = (event) => {
+    setConfirmPassword(event.target.value);
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    console.log("Username:", username);
+    console.log("Password:", password);
+
+    if(confirmPassword !== password) {
+      setErrorMessage("Passwords do not match")
+      return
     }
-    if (passwordRef.current.value !== confirmPasswordRef.current.value) {
-      alert("Passwords do not match");
-      return;
+
+    if (username === "" && password === "") {
+      alert("Enter an email and password");
+    } else if (username === "") {
+      alert("Enter an email");
+    } else if (password === "") {
+      alert("Enter a password");
+    } else if (confirmPassword === "") {
+      alert("Confirm your password")
+    }
+    else {
+      const userData = { username, password, confirmPassword };
+      try {
+        const response = await fetch("http://localhost:3001/create-account", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(userData),
+        });
+
+        const data = await response.json(); // 'data' is now defined here
+        console.log("Response data:", data);
+
+        if (response.ok) {
+          console.log("Signed in as", data.username); // Should log username if successful
+
+          // Change the URL in the browser without reloading the page
+          window.history.replaceState(null, "", "http://localhost:3001");
+          window.location.reload();
+          setErrorMessage(""); // Clear error message on successful login
+        } else {
+          console.error("Error response:", response);
+        }
+
+        // Set error messages based on the response data
+        if (data.error) {
+          if (data.error === "User exists") {
+            setErrorMessage("That user already exists");
+          } else if (data.error === "Incorrect password") {
+            setErrorMessage("The password you entered is incorrect");
+          }
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        setErrorMessage("An unexpected error occurred. Please try again.");
+      }
     }
   };
+
   return (
     <div className="login">
       <div className="login-container">
         <span className="login-sign-in-text">
-          <strong>Sign in</strong>
+          <strong>Create Account</strong>
         </span>
         <input
-          ref={emailRef}
-          type="email"
-          placeholder="Email"
+          ref={usernameRef}
+          type="text"
+          placeholder="Username"
           className="login-email-input login-inputs"
-        ></input>
+          value={username}
+          onChange={handleUsernameChange}
+        />
         <div className="login-password-container">
           <input
             ref={passwordRef}
             type={inputType}
             placeholder="Password"
             className="login-password-input login-inputs"
-          ></input>
+            value={password}
+            onChange={handlePasswordChange}
+          />
+          <button className="login-button" onClick={showPassword}>
+            {inputType === "password" ? "Show" : "Hide"}
+          </button>
+        </div>
+        <div className="login-password-container">
           <input
             ref={confirmPasswordRef}
             type={inputType}
-            placeholder="Password"
+            placeholder="Confirm password"
             className="login-password-input login-inputs"
+            value={confirmPassword}
+            onChange={handleConfirmPasswordChange}
           ></input>
           <button className="login-button" onClick={showPassword}>
             {inputType === "password" ? "Show" : "Hide"}
           </button>
         </div>
+        {/* Error message will be conditionally rendered based on the state */}
+        <p className="error-message">{errorMessage}</p>
 
-        <button className="login-sign-in-button login-button" onClick={signIn}>
-          Sign in
+        <button
+          className="login-sign-in-button login-button"
+          onClick={handleSubmit}
+        >
+          Create Account
         </button>
       </div>
     </div>
   );
 }
+
 export default Login;
