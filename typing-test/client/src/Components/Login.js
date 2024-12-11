@@ -5,7 +5,7 @@ function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [inputType, setInputType] = useState("password");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState(""); // To hold error messages
   const passwordRef = useRef(null);
   const usernameRef = useRef(null);
 
@@ -46,21 +46,33 @@ function Login() {
           },
           body: JSON.stringify(userData),
         });
-        const data = await response.json();
-        console.log(data.username);
-        console.log(data.password);
 
-        if (data.error) {
-          setErrorMessage(data.error); // Set error message if any error is received
+        const data = await response.json(); // 'data' is now defined here
+        console.log("Response data:", data);
+
+        if (response.ok) {
+          console.log("Signed in as", data.username); // Should log username if successful
+
+          // Change the URL in the browser without reloading the page
+          window.history.replaceState(null, '', 'http://localhost:3001');
+          window.location.reload()
+          setErrorMessage(""); // Clear error message on successful login
         } else {
-          console.log("Signed in as", data.username);
+          console.error("Error response:", response);
         }
 
-        if (!response.ok) {
-          console.error("Error signing in:", data);
+        // Set error messages based on the response data
+        if (data.error) {
+          if (data.error === "Non-existent username") {
+            setErrorMessage("That username doesn't exist");
+          } else if (data.error === "Incorrect password") {
+            setErrorMessage("The password you entered is incorrect");
+          }
         }
+
       } catch (error) {
         console.error("Error:", error);
+        setErrorMessage("An unexpected error occurred. Please try again.");
       }
     }
   };
@@ -73,7 +85,7 @@ function Login() {
         </span>
         <input
           ref={usernameRef}
-          type="email"
+          type="text"
           placeholder="Username"
           className="login-email-input login-inputs"
           value={username}
@@ -92,13 +104,10 @@ function Login() {
             {inputType === "password" ? "Show" : "Hide"}
           </button>
         </div>
-        <p className="error-message">
-          {errorMessage === "Non-existent username"
-            ? "That username doesn't exist"
-            : errorMessage === "Incorrect password"
-            ? "The password you entered is incorrect"
-            : ""}
-        </p>
+        
+        {/* Error message will be conditionally rendered based on the state */}
+        <p className="error-message">{errorMessage}</p>
+        
         <button
           className="login-sign-in-button login-button"
           onClick={handleSubmit}

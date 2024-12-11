@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS public.users CASCADE;
+DROP SEQUENCE IF EXISTS public.users_user_id_seq CASCADE;
 --
 -- PostgreSQL database dump
 --
