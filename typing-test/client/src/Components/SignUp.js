@@ -1,12 +1,12 @@
-import "./Login.css";
+import "./SignUp.css";
 import React, { useState, useRef } from "react";
 
-function Login() {
+function SignUp() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [inputType, setInputType] = useState("password");
-  const [errorMessage, setErrorMessage] = useState(""); // To hold error messages
+  const [errorMessage, setErrorMessage] = useState(""); 
   const passwordRef = useRef(null);
   const usernameRef = useRef(null);
   const confirmPasswordRef = useRef(null);
@@ -61,21 +61,21 @@ function Login() {
           body: JSON.stringify(userData),
         });
 
-        const data = await response.json(); // 'data' is now defined here
+        const data = await response.json(); 
         console.log("Response data:", data);
 
         if (response.ok) {
           console.log("Signed in as", data.username); // Should log username if successful
 
-          // Change the URL in the browser without reloading the page
+          // changing url and then reloading
           window.history.replaceState(null, "", "http://localhost:3001");
           window.location.reload();
-          setErrorMessage(""); // Clear error message on successful login
+          setErrorMessage(""); 
         } else {
           console.error("Error response:", response);
         }
 
-        // Set error messages based on the response data
+    
         if (data.error) {
           if (data.error === "User exists") {
             setErrorMessage("That user already exists");
@@ -130,7 +130,6 @@ function Login() {
             {inputType === "password" ? "Show" : "Hide"}
           </button>
         </div>
-        {/* Error message will be conditionally rendered based on the state */}
         <p className="error-message">{errorMessage}</p>
 
         <button
@@ -144,4 +143,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default SignUp;

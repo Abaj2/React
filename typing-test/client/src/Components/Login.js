@@ -1,20 +1,20 @@
 import "./Login.css";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useContext } from "react";
+import { UsernameContext } from "./UsernameContext";
 
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [inputType, setInputType] = useState("password");
-  const [errorMessage, setErrorMessage] = useState(""); // To hold error messages
+  const [errorMessage, setErrorMessage] = useState("");
   const passwordRef = useRef(null);
   const usernameRef = useRef(null);
 
+  // Destructure setFinalUsername from context
+  const { setFinalUsername } = useContext(UsernameContext);
+
   const showPassword = () => {
-    if (inputType === "password") {
-      setInputType("text");
-    } else {
-      setInputType("password");
-    }
+    setInputType(inputType === "password" ? "text" : "password");
   };
 
   const handleUsernameChange = (event) => {
@@ -27,41 +27,38 @@ function Login() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log("Username:", username);
-    console.log("Password:", password);
 
     if (username === "" && password === "") {
       alert("Enter an email and password");
+      return;
     } else if (username === "") {
       alert("Enter an email");
+      return;
     } else if (password === "") {
       alert("Enter a password");
-    } else {
-      const userData = { username, password };
-      try {
-        const response = await fetch("http://localhost:3001/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(userData),
-        });
+      return;
+    }
 
-        const data = await response.json(); // 'data' is now defined here
-        console.log("Response data:", data);
+    const userData = { username, password };
+    try {
+      const response = await fetch("http://localhost:3001/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+      });
 
-        if (response.ok) {
-          console.log("Signed in as", data.username); // Should log username if successful
+      const data = await response.json();
 
-          // Change the URL in the browser without reloading the page
-          window.history.replaceState(null, '', 'http://localhost:3001');
-          window.location.reload()
-          setErrorMessage(""); // Clear error message on successful login
-        } else {
-          console.error("Error response:", response);
-        }
-
-        // Set error messages based on the response data
+      if (response.ok) {
+        const userUsername = data.username;
+        setFinalUsername(userUsername);
+        window.history.replaceState(null, "", "http://localhost:3001");
+        window.location.reload();
+        setErrorMessage("");
+      } else {
+        console.error("Error response:", response);
         if (data.error) {
           if (data.error === "Non-existent username") {
             setErrorMessage("That username doesn't exist");
@@ -69,11 +66,10 @@ function Login() {
             setErrorMessage("The password you entered is incorrect");
           }
         }
-
-      } catch (error) {
-        console.error("Error:", error);
-        setErrorMessage("An unexpected error occurred. Please try again.");
       }
+    } catch (error) {
+      console.error("Error:", error);
+      setErrorMessage("An unexpected error occurred. Please try again.");
     }
   };
 
@@ -104,10 +100,9 @@ function Login() {
             {inputType === "password" ? "Show" : "Hide"}
           </button>
         </div>
-        
-        {/* Error message will be conditionally rendered based on the state */}
+
         <p className="error-message">{errorMessage}</p>
-        
+
         <button
           className="login-sign-in-button login-button"
           onClick={handleSubmit}

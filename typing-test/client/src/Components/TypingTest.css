@@ -1,72 +1,106 @@
-.typing-test * {
+.typing-test-container {
   margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-.typing-test {
-  height: 100vh;
+  font-family: 'Inter', sans-serif;
+  background-color: #1e1e2e;
+  color: #ffffff;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #f4f7fc;
+  height: 100vh;
 }
 
-.typing-test .container {
-  max-width: 650px;
-  width: 100%;
-  padding: 30px;
+.container {
+  text-align: center;
+  width: 80%;
+  max-width: 800px;
+}
+
+.test {
+  background: #2e2e3e;
+  padding: 20px;
   border-radius: 10px;
-  background-color: #fff;
-  box-shadow: 0 0 6px rgba(0, 0, 0, 0.25);
+  margin-bottom: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
-.typing-test .test {
-  user-select: none;
-}
-
-.typing-test #first-span {
-  font-size: 20px;
-  user-select: none;
-  cursor: text;
-}
-
-.typing-test .result {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 15px;
-  padding-top: 10px;
-  border-top: 2px solid rgb(106, 106, 104);
-}
-
-.typing-test button.btn {
-  padding: 5px;
+.input-field {
+  display: block;
+  width: 100%;
+  max-width: 600px; 
+  padding: 12px;
+  margin: 15px auto; 
+  font-size: 18px;
+  color: #ffffff;
+  background-color: #444466;
+  border: none;
+  border-radius: 8px;
+  text-align: center;
   outline: none;
-  border: 1px solid #ced4da;
+}
+
+.input-field:focus {
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+}
+
+.char {
+  font-size: 20px;
+  line-height: 2.5;
+  padding: 0 2px;
+  display: inline-block;
+  color: #ffffff;
+  transition: 0.3s;
+}
+
+.char.active {
+  background-color: #8d86c9;
+  color: #000000;
   border-radius: 4px;
+  animation: blink 1s infinite;
+}
+
+.char.correct {
+  color: #50fa7b;
+}
+
+.char.wrong {
+  color: #ff5555;
+}
+
+@keyframes blink {
+  50% {
+    background-color: #b4befe;
+  }
+}
+
+.result {
+  background: #2e2e3e;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  margin-top: 20px;
+}
+
+.result p {
+  margin: 10px 0;
+  font-size: 16px;
+}
+
+.result strong {
+  font-size: 18px;
+  color: #f8bd96;
+}
+
+.btn {
+  background-color: #8d86c9;
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 8px;
   cursor: pointer;
+  transition: 0.3s;
 }
 
-.typing-test button.btn:hover {
-  background-color: #02500b;
-}
-
-.typing-test input.input-field {
-  opacity: 0;
-  z-index: -999;
-  position: absolute;
-}
-
-.typing-test span.active {
-  border-bottom: 3px solid blue;
-}
-
-.typing-test span.wrong {
-  color: darkred;
-  background-color: pink;
-}
-
-.typing-test span.correct {
-  background-color: green;
+.btn:hover {
+  background-color: #b4befe;
 }
