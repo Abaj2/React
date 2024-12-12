@@ -279,7 +279,8 @@ function TypingTest() {
     }
   
     
-    if (charIndex >= fullParagraph.length) {
+    if (charIndex >= fullParagraph.length - 1) {
+      setMaxTime(0);
       setTimeLeft(0); 
       setIsTyping(false);
     }
@@ -381,7 +382,7 @@ function TypingTest() {
         getRandomWord();
       }
   
-      setFullParagraph(paragraph.join(" "));
+      setFullParagraph(paragraph.join(" ").replace(/\s+$/, ''));
     }
     else if (mode === 15) {
 
