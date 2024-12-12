@@ -163,7 +163,7 @@ function TypingTest() {
   const { finalUsername, setFinalUsername } = useContext(UsernameContext);
   const [paragraph, setParagraph] = useState([]);
   const [fullParagraph, setFullParagraph] = useState("");
-  const maxTime = 15;
+  const [maxTime, setMaxTime] = useState(null)
   const [timeLeft, setTimeLeft] = useState(maxTime);
   const [mistakes, setMistakes] = useState(0);
   const [charIndex, setCharIndex] = useState(0);
@@ -187,48 +187,44 @@ function TypingTest() {
   };
 
   useEffect(() => {
-    for (let i = 0; i < 25; i++) {
-      getRandomWord();
-    }
-  }, []);
-
-  useEffect(() => {
-    setFullParagraph(paragraph.join(" "));
-  }, [paragraph]);
-
-  useEffect(() => {
-    console.log(fullParagraph);
-  }, [fullParagraph]);
-
-  useEffect(() => {
     inputRef.current.focus();
     setCorrectWrong(Array(charRefs.current.length).fill(""));
   }, []);
 
   useEffect(() => {
     let interval;
-    if (isTyping && timeLeft > 0) {
+    if (isTyping && timeLeft > 0 && charIndex < fullParagraph.length) {
       interval = setInterval(() => {
-        setTimeLeft(timeLeft - 1);
-        let correctChars = charIndex - mistakes;
-        let totalTime = maxTime - timeLeft;
-
-        let cpm = correctChars * (60 / totalTime);
-        cpm = cpm < 0 || !cpm || cpm === Infinity ? 0 : cpm;
-        setCPM(parseInt(cpm, 10));
-
-        let wpm = Math.round((correctChars / 5 / totalTime) * 60);
-        wpm = wpm < 0 || !wpm || wpm === Infinity ? 0 : wpm;
-        setWPM(wpm);
+        setTimeLeft((prevTime) => {
+          if (prevTime <= 1) {
+            setIsTyping(false);
+            return 0;
+          }
+          return prevTime - 1;
+        });
       }, 1000);
-    } else if (timeLeft === 0) {
-      clearInterval(interval);
-      setIsTyping(false);
     }
-    return () => {
-      clearInterval(interval);
-    };
-  }, [isTyping, timeLeft]);
+    
+    return () => clearInterval(interval);
+  }, [isTyping, timeLeft, charIndex, fullParagraph.length]);
+  
+  useEffect(() => {
+    if (isTyping && timeLeft > 0 && charIndex < fullParagraph.length) {
+      const totalTime = maxTime - timeLeft;
+      const correctChars = charIndex - mistakes;
+      
+      const newCPM = totalTime > 0 
+        ? Math.round((correctChars / totalTime) * 60) 
+        : 0;
+      
+      const newWPM = totalTime > 0 
+        ? Math.round((correctChars / 5 / totalTime) * 60)
+        : 0;
+  
+      setCPM(newCPM);
+      setWPM(newWPM);
+    }
+  }, [isTyping, timeLeft, charIndex, mistakes, maxTime, fullParagraph.length]);
 
   const createAccount = () => {
     window.history.replaceState(
@@ -248,28 +244,125 @@ function TypingTest() {
     const characters = charRefs.current;
     let currentChar = charRefs.current[charIndex];
     let typedChar = e.target.value.slice(-1);
-    const updatedCorrectWrong = [...correctWrong];
-
+    
+  
+    if (e.nativeEvent.inputType === "deleteContentBackward") {
+      setCharIndex(charIndex - 1);
+      const updatedCorrectWrong = [...correctWrong];
+      updatedCorrectWrong[charIndex - 1] = ""; 
+      setCorrectWrong(updatedCorrectWrong);
+      setInputValue(e.target.value);
+      setMistakes(mistakes > 0 ? mistakes - 1 : 0); 
+      return; 
+    }
+    
+   
+    if (!isTyping) {
+      setIsTyping(true);
+    }
+  
     if (charIndex < characters.length && timeLeft > 0) {
-      if (!isTyping) {
-        setIsTyping(true);
-      }
-
+      const updatedCorrectWrong = [...correctWrong]; 
+  
       if (typedChar === currentChar.textContent) {
         setCharIndex(charIndex + 1);
         updatedCorrectWrong[charIndex] = "correct";
-      } else {
+      } else if (typedChar !== " ") { 
         setCharIndex(charIndex + 1);
         setMistakes(mistakes + 1);
         updatedCorrectWrong[charIndex] = "wrong";
+      } else {
+        setCharIndex(charIndex + 1); 
       }
-
+  
       setCorrectWrong(updatedCorrectWrong);
-
-      if (charIndex === characters.length - 1) setIsTyping(false);
-    } else {
+    }
+  
+    
+    if (charIndex >= fullParagraph.length) {
+      setTimeLeft(0); 
       setIsTyping(false);
     }
+  
+    setInputValue(e.target.value);
+  };
+  
+  
+  useEffect(() => {
+    let interval;
+    if (isTyping && timeLeft > 0) {
+      interval = setInterval(() => {
+        setTimeLeft((prevTime) => {
+          if (prevTime <= 1) {
+            setIsTyping(false);
+            return 0;
+          }
+          return prevTime - 1;
+        });
+      }, 1000);
+    }
+    
+    return () => clearInterval(interval);
+  }, [isTyping, timeLeft]);
+  
+  useEffect(() => {
+    if (isTyping && timeLeft > 0) {
+      const elapsedTime = maxTime - timeLeft;
+      const correctChars = charIndex - mistakes;
+      
+      
+      if (elapsedTime > 0) {
+        const newCPM = Math.round((correctChars / elapsedTime) * 60);
+        const newWPM = Math.round((correctChars / 5 / elapsedTime) * 60);
+  
+        setCPM(newCPM);
+        setWPM(newWPM);
+      }
+    }
+  }, [isTyping, timeLeft, charIndex, mistakes, maxTime]);
+  
+  
+  
+  let mode;
+
+  const fifteenSeconds = () => {
+    setParagraph([])
+    setFullParagraph("")
+    setMaxTime(15)
+    setTimeLeft(15);
+    mode = 15;
+  };
+
+  const thirtySeconds = () => {
+    setParagraph([])
+    setFullParagraph("")
+    setMaxTime(30)
+    setTimeLeft(30);
+    mode = 30
+  };
+
+  const tenWords = () => {
+    setParagraph([])
+    setFullParagraph("")
+    setMaxTime(86400)
+    setTimeLeft(maxTime);
+    mode = 10
+  };
+
+  const twentyFiveWords = () => {
+    setParagraph([])
+    setFullParagraph("")
+    setMaxTime(86400)
+    setTimeLeft(maxTime);
+    mode = 25
+  };
+
+  const fiftyWords = () => {
+    setParagraph([])
+    setFullParagraph("")
+    setMaxTime(86400)
+    setTimeLeft(maxTime);
+    mode = 50
   };
   const resetGame = () => {
     setIsTyping(false);
@@ -277,9 +370,36 @@ function TypingTest() {
     setCharIndex(0);
     setMistakes(0);
     setCPM(0);
+    setInputValue("");
     setWPM(0);
     setCorrectWrong(Array(charRefs.current.length).fill(""));
     inputRef.current.focus();
+
+    if (mode === 10 || mode === 25 || mode === 50) {
+ 
+      for (let i = 0; i < mode; i++) {
+        getRandomWord();
+      }
+  
+      setFullParagraph(paragraph.join(" "));
+    }
+    else if (mode === 15) {
+
+      for (let i = 0; i < 50; i++) {
+        getRandomWord();
+      }
+  
+      setFullParagraph(paragraph.join(" "));
+    }
+    else if (mode === 30) {
+
+
+      for (let i = 0; i < 100; i++) {
+        getRandomWord();
+      }
+      setFullParagraph(paragraph.join(" "));
+    }
+    
   };
 
   return (
@@ -287,6 +407,13 @@ function TypingTest() {
       <div className="container">
         <div>
           <div className="test">
+            <div className="modes">
+              <button className="mode" onClick={() => {fifteenSeconds(); resetGame(); }}>15 Seconds</button>
+              <button className="mode" onClick={() => {thirtySeconds(); resetGame(); }}>30 Seconds</button>
+              <button className="mode" onClick={() => {tenWords(); resetGame(); }}>10 Words</button>
+              <button className="mode" onClick={() => {twentyFiveWords(); resetGame(); }}>25 Words</button>
+              <button className="mode" onClick={() => {fiftyWords(); resetGame(); }}>50 Words</button>
+            </div>
             <input
               type="text"
               className="input-field"
@@ -300,17 +427,15 @@ function TypingTest() {
                 id="first-span"
                 className={`char ${index === charIndex ? "active" : ""} ${
                   correctWrong[index]
-                }`}
+                } ${char === " " ? "space" : ""}`}
                 ref={(e) => (charRefs.current[index] = e)}
               >
-                {char}
+                {char === " " ? "\u00A0" : char}
               </span>
             ))}
           </div>
           <div className="result">
-            <p>
-              Time Left: <strong>{timeLeft}</strong>
-            </p>
+            {timeLeft <= 30 && (<><p>Time Left: <strong>{timeLeft}</strong></p></>)}
             <p>
               Mistakes: <strong>{mistakes}</strong>
             </p>
@@ -321,7 +446,7 @@ function TypingTest() {
               CPM: <strong>{CPM}</strong>
             </p>
             <button className="btn" onClick={resetGame}>
-              Try Again
+              <i className="fa fa-refresh" aria-hidden="true"></i> Retry
             </button>
 
             {finalUsername === "" && (

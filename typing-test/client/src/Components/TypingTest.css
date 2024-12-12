@@ -93,6 +93,15 @@
 .btn {
   background-color: #8d86c9;
   color: #ffffff;
+}
+.mode  {
+  background-color: transparent;
+  color: #f8bd96;
+}
+.mode:hover {
+  color: #ffb300
+}
+.mode, .btn { 
   border: none;
   padding: 10px 20px;
   font-size: 16px;
@@ -103,4 +112,8 @@
 
 .btn:hover {
   background-color: #b4befe;
+}
+.char.space {
+  display: inline-block;
+  width: 5px;
 }
