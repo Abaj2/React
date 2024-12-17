@@ -1,0 +1,160 @@
+/* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #f0f2f5;
+  color: #333;
+  line-height: 1.6;
+  padding: 20px;
+  height: 100vh;
+}
+
+.tracker-container {
+  max-width: 700px;
+  margin: 0 auto;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px 30px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.header h1 {
+  font-size: 2rem;
+  color: #222;
+  font-weight: 600;
+}
+
+.main h2 {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  color: #444;
+  font-weight: 500;
+}
+
+.timer-section, .today-work, .statistics {
+  margin-bottom: 30px;
+}
+
+.timer-display {
+  font-size: 3rem;
+  font-weight: bold;
+  background-color: #f7f9fc;
+  color: #0078d7;
+  border-radius: 10px;
+  padding: 20px;
+  display: inline-block;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.timer-controls {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.timer-controls button {
+  background: #0078d7;
+  color: #ffffff;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.timer-controls button:hover {
+  background: #005bb5;
+  transform: scale(1.05);
+}
+
+.timer-controls button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.today-work ul, .statistics ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 10px;
+}
+
+ul li {
+  background: #f7f9fc;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 12px 15px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  color: #555;
+}
+
+#add-time-btn {
+  background: #28a745;
+  color: #ffffff;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+#add-time-btn:hover {
+  background: #1e7e34;
+  transform: scale(1.05);
+}
+
+.statistics {
+  padding-top: 10px;
+}
+
+.statistics h2 {
+  color: #444;
+}
+
+
+ul li button.delete-btn {
+  background: #e74c3c;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+ul li button.delete-btn:hover {
+  background: #c0392b;
+  transform: scale(1.05);
+}
+
+
+@media (max-width: 600px) {
+  .tracker-container {
+    padding: 15px;
+  }
+
+  .timer-controls {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .timer-display {
+    font-size: 2.5rem;
+  }
+}
